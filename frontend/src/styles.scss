@@ -2,3 +2,29 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+$sides: (top, bottom, left, right);
+
+/* Margin custom scss class*/
+@for $i from 1 through 999 {
+  @each $side in $sides {
+    .m#{str-slice($side, 0, 1)}-#{$i} {
+      margin-#{$side}: #{$i}px !important;
+    }
+    .p#{str-slice($side, 0, 1)}-#{$i} {
+      padding-#{$side}: #{$i}px !important;
+    }
+  }
+}
+
+/* Margin custom scss class*/
+.w-0 {
+  width: 0;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-100 {
+  width: 100%;
+}

@@ -4,17 +4,23 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './material-design/material.module';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import { AllBooksComponent } from './components/all-books/all-books.component';
+import { TechComponent } from './components/tech/tech.component';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, AllBooksComponent, TechComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule,
+    MatToolbarModule,
+    HttpClientModule,
+    MatCardModule
   ],
-  providers: [],
+  providers: [HttpClient],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
