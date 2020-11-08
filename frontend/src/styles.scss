@@ -3,6 +3,8 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 $sides: (top, bottom, left, right);
+$armageddon: #b70000 !default;
+$main-color: #3f51b5 !default;
 
 /* Margin custom scss class*/
 @for $i from 1 through 999 {
@@ -25,6 +27,50 @@ $sides: (top, bottom, left, right);
   width: 50%;
 }
 
+.w-75 {
+  width: 75%;
+}
+
 .w-100 {
   width: 100%;
+}
+
+.text-armageddon {
+  color: $armageddon;
+}
+
+.text-submit {
+  background-color: $main-color;
+  color: white;
+}
+
+.btn-dialog {
+  float: right;
+}
+
+.btn-edit {
+  color: $main-color;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.example-half-width {
+  width: 49%;
+}
+
+.filter {
+  font-size: 14px;
+  width: 75%;
 }

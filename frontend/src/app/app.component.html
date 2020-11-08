@@ -1,9 +1,15 @@
 <p>
     <mat-toolbar color="primary">
-      <span class="material-icons mr-10">
-        menu_book
-      </span>
+      <button [routerLink]="['/home']" mat-icon-button >
+        <span class="material-icons mr-9">
+          menu_book
+        </span>
+      </button>
       <span>{{title}}</span>
+      <span class="example-spacer"></span>
+      <button [routerLink]="['/tech']" mat-icon-button class="example-icon favorite-icon" aria-label="icon-button with info icon">
+        <mat-icon>info</mat-icon>
+      </button>
     </mat-toolbar>
   </p>
 <router-outlet></router-outlet>

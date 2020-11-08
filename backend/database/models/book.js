@@ -19,6 +19,9 @@ const BookSchema = new moongoose.Schema({
         trim: true,
         minlength: 2,
     },
+    created_date: {
+        type: Date
+    }
 });
 
 const Book = moongoose.model("Book", BookSchema);

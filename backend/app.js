@@ -7,6 +7,10 @@ const mongoose = require("./database/mongoose");
 
 // Models
 const Book = require("./database/models/book");
+const Log = require("./database/models/logs");
+
+// Controllers
+const BooksController = require("./database/controllers/books-controller");
 
 // Return a JSON
 app.use(express.json());
@@ -32,39 +36,19 @@ app.use((req, res, next) => {
 /*
     Methods and Routes
 */
-app.get("/books", (req, res) => {
-    Book.find({})
-        .then((books) => res.send(books))
-        .catch((error) => console.log(error));
-});
+app.get("/books", BooksController.findAll);
 
-app.post("/books/new", (req, res) => {
-    new Book({
-        title: req.body.title,
-        description: req.body.description,
-        publish_date: req.body.publish_date,
-        authors: req.body.authors,
-    })
-        .save()
-        .then((books) => res.send(books))
-        .catch((error) => console.log(error));
-});
+app.post("/books/new", BooksController.create);
 
-app.get("/books/:id", (req, res) => {
-    Book.find({ _id: req.params.id })
-        .then((books) => res.send(books))
-        .catch((error) => console.log(error));
-});
+app.get("/books/:id", BooksController.findOne);
 
-app.patch("/books/:id", (req, res) => {
-    Book.findOneAndUpdate({ _id: req.params.id }, { $set: req.body })
-        .then((books) => res.send(books))
-        .catch((error) => console.log(error));
-});
+app.patch("/books/:id", BooksController.update);
 
-app.delete("/books/:id", (req, res) => {
-    Book.findOneAndDelete({ _id: req.params.id })
-        .then((books) => res.send(books))
+app.delete("/books/:id", BooksController.delete);
+
+app.get("/logs", (req, res) => {
+    Log.find({}).sort({change_date: -1})
+        .then((logs) => res.send(logs))
         .catch((error) => console.log(error));
 });
 

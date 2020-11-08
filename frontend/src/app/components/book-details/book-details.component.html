@@ -1,0 +1,60 @@
+<h2 *ngIf="editMode">Editing book {{data.title}}</h2>
+<h2 *ngIf="!editMode">Creating new book</h2>
+<div class="mt-10">
+  <form [formGroup]="bookForm" fxLayout="column" class="example-form"
+        (ngSubmit)="data['isEdit'] ? editBook(bookForm.value): createBook(bookForm.value)">
+    <h3 class="mt-2 mb-2">Book Information</h3>
+
+    <div [hidden]="true">
+      <mat-form-field appearance="fill" *ngIf="data['isEdit']">
+        <mat-label hidden>Id.</mat-label>
+        <input matInput required formControlName="id">
+      </mat-form-field>
+    </div>
+    <div fxLayout="column">
+      <div fxLayout="row">
+        <mat-form-field appearance="fill" fxFlex="auto" class="example-full-width">
+          <mat-label>Title</mat-label>
+          <input matInput type="text" required formControlName="title" autocomplete="nope">
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="column">
+      <div fxLayout="row">
+        <mat-form-field appearance="fill" fxFlex="10" class="example-half-width">
+          <mat-label>Publish date</mat-label>
+          <input matInput [matDatepickerFilter]="myFilter" formControlName="publish_date" [matDatepicker]="picker">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" fxFlex="10" class="example-half-width ml-10">
+          <mat-label>Authors</mat-label>
+          <input matInput formControlName="authors" min="0">
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="column">
+      <div fxLayout="row">
+        <mat-form-field appearance="fill" fxFlex="auto" class="example-full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput required formControlName="description"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+      <button *ngIf="!data['isEdit']" class="m-2" color="secondary" (click)="cleanForm()"
+              mat-raised-button
+              type="button">
+        <!--<i class="material-icons">undo</i>-->
+        Clean
+      </button>
+      <button class="m-2 text-submit btn-dialog" mat-raised-button type="submit" [disabled]="bookForm.pristine">
+        <!-- [disabled]="!addForm.valid" -->
+        <i class="material-icons">check</i>
+        Save
+      </button>
+    </div>
+  </form>
+</div>
