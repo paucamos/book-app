@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import {BookService} from '../../services/book.service';
 import {Subscription} from 'rxjs';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatDialog} from '@angular/material/dialog';
@@ -15,10 +15,12 @@ import * as _ from 'lodash';
   templateUrl: './all-books.component.html',
   styleUrls: []
 })
-export class AllBooksComponent implements OnInit, OnDestroy {
+export class AllBooksComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  // Subscriptions
   private subscription: Subscription;
   private logsSubscription: Subscription;
+  private logsNodeSubscription: Subscription;
 
   // Table columns
   displayedColumns: string[] = ['title', 'description', 'publish_date', 'authors', 'actions'];
@@ -27,14 +29,26 @@ export class AllBooksComponent implements OnInit, OnDestroy {
   // Table data
   dataSource: MatTableDataSource<any>;
   changesDataSource: MatTableDataSource<any>;
+  nodeDataSource: MatTableDataSource<any>;
 
   // Paginator
   @ViewChild('firstPaginator', {static: true}) firstPaginator: MatPaginator;
   @ViewChild('secondPaginator', {static: true}) secondPaginator: MatPaginator;
+  @ViewChild('thirdPaginator', {static: false}) thirdPaginator: MatPaginator;
 
-  // TODO:: Sort
+  // Sort
+  // TODO:: Sort second table
   @ViewChild('firstTableSort') firstTableSort: MatSort;
   @ViewChild('secondTableSort') secondTableSort: MatSort;
+  @ViewChild('thirdTableSort') thirdTableSort: MatSort;
+
+  // Custom pagination
+  pageIndex:number;
+  pageSize:number;
+  length:number;
+
+  // MatPaginator Output
+  pageEvent: PageEvent;
 
   constructor(
     private bookService: BookService,
@@ -49,7 +63,7 @@ export class AllBooksComponent implements OnInit, OnDestroy {
   getBooks(): void {
     this.subscription = this.bookService.getAllBooks()
       .subscribe(books => {
-        this.dataSource = new MatTableDataSource(books);
+        this.dataSource = new MatTableDataSource(<any>books);
         this.dataSource.sort = this.firstTableSort;
         this.dataSource.paginator = this.firstPaginator;
       });
@@ -58,21 +72,46 @@ export class AllBooksComponent implements OnInit, OnDestroy {
   getChanges(): void {
     this.logsSubscription = this.logsService.getAllLogs()
       .subscribe(logs => {
-        // Hide ID Changes from Mongo
-        logs = _.filter(logs, function(o) { return !o.action.toLowerCase().includes("id")});
-
-        this.changesDataSource = new MatTableDataSource(logs);
+        this.changesDataSource = new MatTableDataSource(<any>logs);
         this.changesDataSource.sort = this.secondTableSort;
         this.changesDataSource.paginator = this.secondPaginator;
       });
   }
 
+  public getChangesNode(event?): PageEvent {
+    this.logsNodeSubscription = this.logsService.getAllPaginatedLogs(event)
+      .subscribe(response => {
+          if(response['error']) {
+            // handle error
+          } else {
+            this.nodeDataSource = response['logs'];
+            this.pageIndex = response['pageIndex'];
+            this.length = response['length'];
+          }
+        },
+        error =>{
+          // handle error
+        }
+      );
+    return event;
+  }
+
+  // Hide ID Changes from Mongo
+  getCustomLogs(logs) {
+    return _.filter(logs['logs'], function(o) { return !o.action.toLowerCase().includes("id")});
+  }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.logsSubscription.unsubscribe();
+    this.logsNodeSubscription.unsubscribe();
   }
 
   ngOnInit(): void {
+    this.getChangesNode(null);
+  }
+
+  ngAfterViewInit(): void {
   }
 
   bookDetails(isEdit = false, book = null) {
@@ -107,4 +146,5 @@ export class AllBooksComponent implements OnInit, OnDestroy {
         this.changesDataSource.filter = filterValue.trim().toLowerCase();
       }
   }
+
 }

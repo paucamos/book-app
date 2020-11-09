@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormBuilder} from '@angular/forms';
 import {BookService} from '../../services/book.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-book-details',
@@ -55,10 +56,20 @@ export class BookDetailsComponent implements OnInit {
   }
 
   editBook(book) {
-    this.bookService.updateBook(book).then(data => {
+    let self = this;
+    book._id = book.id;
+    delete(book.id);
+    let newBody = {};
+    _.reduce(book, function(result, value, key) {
+      return _.isEqual(value, self.data.book[key]) ? result : newBody[key] = value;
+    }, []);
+
+    newBody['_id'] = book._id;
+    this.bookService.updateBook(newBody).then( result => {
       this.dialogRef.close();
-      this.openSnackBar(data);
+      this.openSnackBar(result);
     });
+
   }
 
   createBook(book) {

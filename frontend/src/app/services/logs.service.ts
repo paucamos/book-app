@@ -14,4 +14,15 @@ export class LogsService {
   getAllLogs() {
     return this.http.get(`${this.baseUrl}/logs`);
   }
+
+  // Not working properly
+  getAllPaginatedLogs(e) {
+    if (!e) {
+      e = {
+        pageIndex: 1,
+        pageSize: 2
+      }
+    }
+    return this.http.get(`${this.baseUrl}/logs/node?page=${e.pageIndex}&limit=${e.pageSize}`);
+  }
 }

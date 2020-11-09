@@ -20,7 +20,7 @@ export class BookService {
   }
 
   updateBook(book: any) {
-    return this.http.patch(`${this.baseUrl}/books/${book.id}`, book).toPromise();
+    return this.http.patch(`${this.baseUrl}/books/${book._id}`, book).toPromise();
   }
 
   deleteBook(book: any) {
